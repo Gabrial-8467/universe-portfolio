@@ -1,73 +1,79 @@
 {
-  "hash": "8636e229",
-  "configHash": "8e7efa14",
-  "lockfileHash": "b066806a",
-  "browserHash": "726836ac",
+  "hash": "836090df",
+  "configHash": "c342db53",
+  "lockfileHash": "ec0b855d",
+  "browserHash": "a93e4267",
   "optimized": {
+    "@react-three/drei": {
+      "src": "../../node_modules/@react-three/drei/index.js",
+      "file": "@react-three_drei.js",
+      "fileHash": "260180a8",
+      "needsInterop": false
+    },
     "@react-three/fiber": {
       "src": "../../node_modules/@react-three/fiber/dist/react-three-fiber.esm.js",
       "file": "@react-three_fiber.js",
-      "fileHash": "4d3c2df1",
+      "fileHash": "2dbe0263",
       "needsInterop": false
     },
     "@react-three/postprocessing": {
       "src": "../../node_modules/@react-three/postprocessing/dist/index.js",
       "file": "@react-three_postprocessing.js",
-      "fileHash": "c729f37b",
+      "fileHash": "1d68b207",
       "needsInterop": false
     },
     "gsap": {
       "src": "../../node_modules/gsap/index.js",
       "file": "gsap.js",
-      "fileHash": "db7e5951",
+      "fileHash": "8e6539b1",
       "needsInterop": false
     },
     "react-dom": {
       "src": "../../node_modules/react-dom/index.js",
       "file": "react-dom.js",
-      "fileHash": "27d8ec63",
+      "fileHash": "5f8b71a1",
       "needsInterop": true
     },
     "react-dom/client": {
       "src": "../../node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "8f25cad1",
+      "fileHash": "ae96a3fc",
       "needsInterop": true
     },
     "react": {
       "src": "../../node_modules/react/index.js",
       "file": "react.js",
-      "fileHash": "68b6705e",
+      "fileHash": "a3569d48",
       "needsInterop": true
     },
     "react/jsx-dev-runtime": {
       "src": "../../node_modules/react/jsx-dev-runtime.js",
       "file": "react_jsx-dev-runtime.js",
-      "fileHash": "75e8d5ff",
+      "fileHash": "70009611",
       "needsInterop": true
     },
     "react/jsx-runtime": {
       "src": "../../node_modules/react/jsx-runtime.js",
       "file": "react_jsx-runtime.js",
-      "fileHash": "2169a051",
+      "fileHash": "8aad1deb",
       "needsInterop": true
     },
     "three": {
       "src": "../../node_modules/three/build/three.module.js",
       "file": "three.js",
-      "fileHash": "05042035",
+      "fileHash": "7be585cd",
       "needsInterop": false
     },
     "three/examples/jsm/loaders/GLTFLoader.js": {
       "src": "../../node_modules/three/examples/jsm/loaders/GLTFLoader.js",
       "file": "three_examples_jsm_loaders_GLTFLoader__js.js",
-      "fileHash": "d54e405f",
+      "fileHash": "5bdcc5a7",
       "needsInterop": false
     },
     "zustand": {
       "src": "../../node_modules/zustand/esm/index.mjs",
       "file": "zustand.js",
-      "fileHash": "7acc5e3d",
+      "fileHash": "3c97251f",
       "needsInterop": false
     }
   },
@@ -76,21 +82,25 @@
       "file": "chunk-CYJPkc-J.js",
       "isDynamicEntry": false
     },
-    "react-three-fiber.esm-5qgBOr9e": {
-      "file": "react-three-fiber.esm-5qgBOr9e.js",
+    "react-three-fiber.esm-CU1xL2tD": {
+      "file": "react-three-fiber.esm-CU1xL2tD.js",
       "isDynamicEntry": false
     },
-    "scheduler-CB7vBvJi": {
-      "file": "scheduler-CB7vBvJi.js",
+    "scheduler-CWuCHEyl": {
+      "file": "scheduler-CWuCHEyl.js",
       "isDynamicEntry": false
     },
-    "three.module-DxTnMYRF": {
-      "file": "three.module-DxTnMYRF.js",
+    "three.module-cLrRfqXO": {
+      "file": "three.module-cLrRfqXO.js",
       "isDynamicEntry": false
     },
-    "vanilla-BGp_ExrV": {
-      "file": "vanilla-BGp_ExrV.js",
+    "vanilla-CAYEPk1R": {
+      "file": "vanilla-CAYEPk1R.js",
       "isDynamicEntry": false
+    },
+    "vision_bundle-BKBD5DG2": {
+      "file": "vision_bundle-BKBD5DG2.js",
+      "isDynamicEntry": true
     }
   }
 }

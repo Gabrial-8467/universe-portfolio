@@ -1,11 +1,7 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { useUniverseStore } from "../../store";
 
-interface AudioControllerProps {
-  onToggle?: (enabled: boolean) => void;
-}
-
-export const AudioController: React.FC<AudioControllerProps> = ({ onToggle }) => {
+export const AudioController: React.FC = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioUnlockedRef = useRef(false);
   const { audioEnabled } = useUniverseStore();
@@ -25,10 +21,6 @@ export const AudioController: React.FC<AudioControllerProps> = ({ onToggle }) =>
     audioUnlockedRef.current = true;
     return audioContextRef.current;
   }, [audioEnabled]);
-
-  useEffect(() => {
-    onToggle?.(audioEnabled);
-  }, [audioEnabled, onToggle]);
 
   const unlockAudio = useCallback(async () => {
     const ctx = await ensureAudioContext();
@@ -79,7 +71,6 @@ export const AudioController: React.FC<AudioControllerProps> = ({ onToggle }) =>
   };
 
   useEffect(() => {
-    // Expose audio functions globally for components
     (window as any).audioController = {
       unlockAudio,
       playHoverSound,

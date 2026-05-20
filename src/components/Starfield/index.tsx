@@ -25,6 +25,7 @@ export const Starfield: React.FC<StarfieldProps> = ({
 }) => {
   const pointsRef = useRef<THREE.Points>(null);
   const velocityRef = useRef(0);
+  const cameraDirRef = useRef(new THREE.Vector3(0, 0, 1));
   const { camera } = useThree();
   const halfScale = scale / 2;
 
@@ -65,23 +66,33 @@ export const Starfield: React.FC<StarfieldProps> = ({
     if (!infinite || !pointsRef.current) return;
 
     pointsRef.current.position.copy(camera.position);
+    camera.getWorldDirection(cameraDirRef.current).normalize();
 
     const positionAttribute = pointsRef.current.geometry.getAttribute("position") as THREE.BufferAttribute;
     const values = positionAttribute.array as Float32Array;
     const travel = (velocityRef.current + driftSpeed) * delta;
 
     for (let i = 0; i < count; i += 1) {
-      const zIndex = i * 3 + 2;
-      values[zIndex] += travel;
+      values[i * 3] += cameraDirRef.current.x * travel;
+      values[i * 3 + 1] += cameraDirRef.current.y * travel;
+      values[i * 3 + 2] += cameraDirRef.current.z * travel;
 
-      if (values[zIndex] > halfScale) {
-        values[zIndex] -= scale;
-        values[i * 3] = (Math.random() - 0.5) * scale;
-        values[i * 3 + 1] = (Math.random() - 0.5) * scale;
-      } else if (values[zIndex] < -halfScale) {
-        values[zIndex] += scale;
-        values[i * 3] = (Math.random() - 0.5) * scale;
-        values[i * 3 + 1] = (Math.random() - 0.5) * scale;
+      if (values[i * 3] > halfScale) {
+        values[i * 3] -= scale;
+      } else if (values[i * 3] < -halfScale) {
+        values[i * 3] += scale;
+      }
+
+      if (values[i * 3 + 1] > halfScale) {
+        values[i * 3 + 1] -= scale;
+      } else if (values[i * 3 + 1] < -halfScale) {
+        values[i * 3 + 1] += scale;
+      }
+
+      if (values[i * 3 + 2] > halfScale) {
+        values[i * 3 + 2] -= scale;
+      } else if (values[i * 3 + 2] < -halfScale) {
+        values[i * 3 + 2] += scale;
       }
     }
 
