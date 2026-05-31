@@ -4,7 +4,7 @@ export { default as UniverseScene } from "./scenes/UniverseScene";
 
 // 3D Components
 export { Galaxy } from "./components/Galaxy";
-export { Wormhole } from "./components/Blackhole";
+export { Blackhole } from "./components/Blackhole";
 export { Starfield } from "./components/Starfield";
 export { CameraController } from "./components/CameraController";
 export { AudioController } from "./components/AudioController";

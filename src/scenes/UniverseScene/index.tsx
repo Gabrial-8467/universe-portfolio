@@ -4,7 +4,7 @@ import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import Starfield from "../../components/Starfield";
 import Galaxy from "../../components/Galaxy";
-import Wormhole from "../../components/Blackhole";
+import Blackhole from "../../components/Blackhole";
 import { useUniverseStore } from "../../store";
 
 interface PortfolioItem {
@@ -201,7 +201,7 @@ export const UniverseScene: React.FC = () => {
           }}
         >
           {item.title === "Contact" ? (
-            <Wormhole
+            <Blackhole
               position={[0, 0, 0]}
               scale={
                 hoveredId === item.id || travelTargetId === item.id
