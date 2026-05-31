@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -9,17 +9,6 @@ interface CameraControllerProps {
   rotateSpeed?: number;
 }
 
-const directionLabelForKeys = (keys: Record<string, boolean>) => {
-  const labels = [];
-  if (keys.w) labels.push("Forward");
-  if (keys.s) labels.push("Backward");
-  if (keys.a) labels.push("Left");
-  if (keys.d) labels.push("Right");
-  if (keys.q) labels.push("Up");
-  if (keys.e) labels.push("Down");
-  return labels.length > 0 ? labels.join(" + ") : "Idle";
-};
-
 export const CameraController: React.FC<CameraControllerProps> = ({
   enableZoom = true,
   zoomSpeed = 10,
@@ -29,14 +18,13 @@ export const CameraController: React.FC<CameraControllerProps> = ({
   const { camera } = useThree();
   const dragStateRef = useRef({ active: false, x: 0, y: 0 });
   const keysRef = useRef<Record<string, boolean>>({});
-  const [directionLabel, setDirectionLabel] = useState("Idle");
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       if (!enableZoom) return;
       e.preventDefault();
 
-      const zoomAmount = e.deltaY > 0 ? zoomSpeed : -zoomSpeed;
+      const zoomAmount = e.deltaY > 0 ? -zoomSpeed : zoomSpeed;
       const direction = new THREE.Vector3();
       camera.getWorldDirection(direction);
       camera.position.add(direction.multiplyScalar(zoomAmount));
@@ -52,7 +40,6 @@ export const CameraController: React.FC<CameraControllerProps> = ({
       if (!["w", "a", "s", "d", "q", "e"].includes(key)) return;
       event.preventDefault();
       keysRef.current[key] = value;
-      setDirectionLabel(directionLabelForKeys(keysRef.current));
     };
 
     const handleKeyDown = (event: KeyboardEvent) => setKey(event, true);

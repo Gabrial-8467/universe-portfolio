@@ -9,11 +9,11 @@ import UniverseScene from "./scenes/UniverseScene";
 import "./App.css";
 
 function AppContent() {
-  const { currentScene } = useUniverseStore();
+  const { currentScene, isAnimating } = useUniverseStore();
 
   return (
     <>
-      <CameraController enableZoom zoomSpeed={10} enableRotate rotateSpeed={0.5} />
+      <CameraController enableZoom={!isAnimating} zoomSpeed={10} enableRotate={!isAnimating} rotateSpeed={0.5} />
       <AudioController />
       <EffectComposer>
         <Bloom luminanceThreshold={0.62} luminanceSmoothing={0.9} intensity={1.05} levels={6} mipmapBlur />

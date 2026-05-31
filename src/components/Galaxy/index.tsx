@@ -1,5 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 interface GalaxyProps {
@@ -16,6 +17,7 @@ export const Galaxy: React.FC<GalaxyProps> = ({
   rotation = [0, 0, 0],
 }) => {
   const { scene } = useGLTF("/galaxyModel/galaxy.glb");
+  const galaxyRef = useRef<THREE.Object3D>(null);
 
   const clonedScene = useMemo(() => {
     if (!scene) return null;
@@ -30,10 +32,17 @@ export const Galaxy: React.FC<GalaxyProps> = ({
     return cloned;
   }, [scene]);
 
+  useFrame((_, delta) => {
+    if (galaxyRef.current) {
+      galaxyRef.current.rotation.y += delta * 0.1;
+    }
+  });
+
   if (!clonedScene) return null;
 
   return (
     <primitive
+      ref={galaxyRef}
       object={clonedScene}
       position={position}
       scale={scale * GALAXY_BASE_SCALE}

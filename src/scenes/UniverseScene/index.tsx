@@ -4,6 +4,8 @@ import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import Starfield from "../../components/Starfield";
 import Galaxy from "../../components/Galaxy";
+import Wormhole from "../../components/Wormhole";
+import { useUniverseStore } from "../../store";
 
 interface PortfolioItem {
   id: number;
@@ -18,6 +20,7 @@ interface PortfolioItem {
 
 export const UniverseScene: React.FC = () => {
   const { camera } = useThree();
+  const { setIsTraveling, setIsAnimating } = useUniverseStore();
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   const randomPosition = (spread = 3200): [number, number, number] => [
@@ -48,81 +51,71 @@ export const UniverseScene: React.FC = () => {
       {
         cameraOffset: randomCameraOffset(),
         id: 1,
-        title: "Project Alpha",
-        description: "Explore my first major work",
+        title: "About",
+        description: "Learn more about me",
         position: randomPosition(),
         rotation: randomRotation(),
         scale: 1.2,
-        link: "#project-alpha",
+        link: "#about",
       },
       {
         id: 2,
-        title: "Project Beta",
-        description: "Revolutionary design approach",
+        title: "Skills",
+        description: "My technical expertise",
         position: randomPosition(),
         rotation: randomRotation(),
         scale: 0.9,
-        link: "#project-beta",
+        link: "#skills",
         cameraOffset: randomCameraOffset(),
       },
       {
         id: 3,
-        title: "Project Gamma",
-        description: "Cutting-edge technology",
+        title: "Education",
+        description: "Academic background",
         position: randomPosition(),
         rotation: randomRotation(),
         scale: 0.7,
-        link: "#project-gamma",
+        link: "#education",
         cameraOffset: randomCameraOffset(),
       },
       {
         id: 4,
-        title: "Project Delta",
-        description: "Innovative solutions",
+        title: "Experience",
+        description: "Professional journey",
         position: randomPosition(),
         rotation: randomRotation(),
         scale: 0.85,
-        link: "#project-delta",
+        link: "#experience",
         cameraOffset: randomCameraOffset(),
       },
       {
         id: 5,
-        title: "Project Epsilon",
-        description: "Digital transformation",
+        title: "Achievements",
+        description: "Notable accomplishments",
         position: randomPosition(),
         rotation: randomRotation(),
         scale: 0.75,
-        link: "#project-epsilon",
+        link: "#achievements",
         cameraOffset: randomCameraOffset(),
       },
       {
         id: 6,
-        title: "Project Zeta",
-        description: "Next generation platform",
+        title: "Projects",
+        description: "Featured work",
         position: randomPosition(),
         rotation: randomRotation(),
         scale: 0.82,
-        link: "#project-zeta",
+        link: "#projects",
         cameraOffset: randomCameraOffset(),
       },
       {
         id: 7,
-        title: "Project Eta",
-        description: "Advanced AI integration",
-        position: randomPosition(),
-        rotation: randomRotation(),
-        scale: 0.88,
-        link: "#project-eta",
-        cameraOffset: randomCameraOffset(),
-      },
-      {
-        id: 8,
-        title: "Project Theta",
-        description: "Quantum computing research",
+        title: "Contact",
+        description: "Get in touch",
         position: randomPosition(),
         rotation: randomRotation(),
         scale: 1.0,
-        link: "#project-theta",
+        link: "#contact",
         cameraOffset: randomCameraOffset(),
       },
     ];
@@ -166,6 +159,8 @@ export const UniverseScene: React.FC = () => {
 
         const distance = perspectiveCamera.position.distanceTo(desiredCameraPos);
         if (distance < 2) {
+          setIsTraveling(false);
+          setIsAnimating(false);
           setTravelTargetId(null);
           if (travelLink) {
             window.location.href = travelLink;
@@ -201,17 +196,31 @@ export const UniverseScene: React.FC = () => {
             cameraZoom.current = 1;
             setTravelTargetId(item.id);
             setTravelLink(item.link);
+            setIsTraveling(true);
+            setIsAnimating(true);
           }}
         >
-          <Galaxy
-            position={[0, 0, 0]}
-            scale={
-              hoveredId === item.id || travelTargetId === item.id
-                ? item.scale * 2.4
-                : item.scale
-            }
-            rotation={[0, 0, 0]}
-          />
+          {item.title === "Contact" ? (
+            <Wormhole
+              position={[0, 0, 0]}
+              scale={
+                hoveredId === item.id || travelTargetId === item.id
+                  ? item.scale * 2.4
+                  : item.scale
+              }
+              rotation={[0, 0, 0]}
+            />
+          ) : (
+            <Galaxy
+              position={[0, 0, 0]}
+              scale={
+                hoveredId === item.id || travelTargetId === item.id
+                  ? item.scale * 2.4
+                  : item.scale
+              }
+              rotation={[0, 0, 0]}
+            />
+          )}
 
           {/* Hover label */}
           {hoveredId === item.id && (
@@ -221,7 +230,7 @@ export const UniverseScene: React.FC = () => {
           )}
 
           {/* Visual indicator/halo for interactive galaxies */}
-          {hoveredId === item.id && (
+          {hoveredId === item.id && item.title !== "Contact" && (
             <mesh>
               <sphereGeometry args={[item.scale * 9, 32, 32]} />
               <meshBasicMaterial

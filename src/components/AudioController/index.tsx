@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { useUniverseStore } from "../../store";
+import aumAudio from "../../assets/audio/aum.mp3";
 
 export const AudioController: React.FC = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioUnlockedRef = useRef(false);
+  const audioElementRef = useRef<HTMLAudioElement | null>(null);
   const { audioEnabled } = useUniverseStore();
 
   const ensureAudioContext = useCallback(async () => {
@@ -69,6 +71,28 @@ export const AudioController: React.FC = () => {
     if (!audioEnabled || !audioUnlockedRef.current) return;
     void playAmbience(400, 0.5);
   };
+
+  useEffect(() => {
+    if (!audioElementRef.current) {
+      audioElementRef.current = new Audio(aumAudio);
+      audioElementRef.current.loop = true;
+      audioElementRef.current.volume = 0.2;
+    }
+
+    const audio = audioElementRef.current;
+
+    if (audioEnabled) {
+      void ensureAudioContext().then(() => {
+        void audio.play().catch((err) => console.error("Audio play error:", err));
+      });
+    } else {
+      audio.pause();
+    }
+
+    return () => {
+      audio.pause();
+    };
+  }, [audioEnabled, ensureAudioContext]);
 
   useEffect(() => {
     (window as any).audioController = {
