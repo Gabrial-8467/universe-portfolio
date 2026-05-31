@@ -4,7 +4,7 @@ import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import Starfield from "../../components/Starfield";
 import Galaxy from "../../components/Galaxy";
-import Wormhole from "../../components/Wormhole";
+import Wormhole from "../../components/Blackhole";
 import { useUniverseStore } from "../../store";
 
 interface PortfolioItem {
