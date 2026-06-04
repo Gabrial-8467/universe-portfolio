@@ -26,8 +26,8 @@ export const UniverseScene: React.FC = () => {
   const LY_SCALE = 100;
 
   const randomGalaxyPosition = (
-    minLY = 8,
-    maxLY = 15
+    minLY = 20,
+    maxLY = 40
   ): [number, number, number] => {
     const distanceLY = minLY + Math.random() * (maxLY - minLY);
 
@@ -44,7 +44,7 @@ export const UniverseScene: React.FC = () => {
   };
 
   const blackholePosition: [number, number, number] = [
-    21 * LY_SCALE,
+    51 * LY_SCALE,
     0,
     0,
   ];

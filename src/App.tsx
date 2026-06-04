@@ -71,8 +71,8 @@ export default function App() {
     setDistanceTraveled(prev => prev + distance);
   };
 
-  // 4000 scene units = 1 light year
-const lightYears = (distanceTraveled / 4000).toFixed(2);
+const LY_SCALE = 100;
+const lightYears = (distanceTraveled / LY_SCALE).toFixed(2);
 
   useEffect(() => {
     if (currentScene === 'universe') {
