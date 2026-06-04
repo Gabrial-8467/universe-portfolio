@@ -244,6 +244,8 @@ export const UniverseScene: React.FC = () => {
         </group>
       ))}
 
+
+
       {/* Deep space fog */}
       <fog attach="fog" args={["#000000", 100, 2000]} />
     </group>

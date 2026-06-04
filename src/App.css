@@ -153,6 +153,28 @@ canvas {
   background: rgba(255, 255, 255, 0.12);
 }
 
+.distance-readout {
+  grid-column: 3;
+  grid-row: 1;
+  max-width: 200px;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  filter: drop-shadow(0 16px 34px rgba(0, 0, 0, 0.78));
+}
+
+.distance-readout strong {
+  display: block;
+  margin-top: 8px;
+  color: #00ff88;
+  font-size: 28px;
+  font-weight: 800;
+  text-shadow: 0 0 15px rgba(0, 255, 136, 0.5), 0 0 30px rgba(0, 255, 136, 0.2);
+  line-height: 1;
+}
+
 @media (max-width: 760px) {
   .ui-overlay {
     grid-template-columns: 1fr;
@@ -165,6 +187,12 @@ canvas {
 
   .mission-readout strong {
     font-size: 32px;
+  }
+
+  .distance-readout {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
   }
 
   .control-deck {
