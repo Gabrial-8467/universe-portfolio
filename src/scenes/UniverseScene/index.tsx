@@ -23,10 +23,30 @@ export const UniverseScene: React.FC = () => {
   const { setIsTraveling, setIsAnimating } = useUniverseStore();
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
-  const randomPosition = (spread = 3200): [number, number, number] => [
-    Math.random() * spread - spread / 2,
-    Math.random() * spread - spread / 2,
-    -Math.random() * 3600 - 800,
+  const LY_SCALE = 100;
+
+  const randomGalaxyPosition = (
+    minLY = 8,
+    maxLY = 15
+  ): [number, number, number] => {
+    const distanceLY = minLY + Math.random() * (maxLY - minLY);
+
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.random() * Math.PI;
+
+    const radius = distanceLY * LY_SCALE;
+
+    return [
+      radius * Math.sin(phi) * Math.cos(theta),
+      radius * Math.sin(phi) * Math.sin(theta),
+      radius * Math.cos(phi),
+    ];
+  };
+
+  const blackholePosition: [number, number, number] = [
+    21 * LY_SCALE,
+    0,
+    0,
   ];
 
   const randomRotation = (): [number, number, number] => [
@@ -53,7 +73,7 @@ export const UniverseScene: React.FC = () => {
         id: 1,
         title: "About",
         description: "Learn more about me",
-        position: randomPosition(),
+        position: randomGalaxyPosition(),
         rotation: randomRotation(),
         scale: 1.2,
         link: "#about",
@@ -62,7 +82,7 @@ export const UniverseScene: React.FC = () => {
         id: 2,
         title: "Skills",
         description: "My technical expertise",
-        position: randomPosition(),
+        position: randomGalaxyPosition(),
         rotation: randomRotation(),
         scale: 0.9,
         link: "#skills",
@@ -72,7 +92,7 @@ export const UniverseScene: React.FC = () => {
         id: 3,
         title: "Education",
         description: "Academic background",
-        position: randomPosition(),
+        position: randomGalaxyPosition(),
         rotation: randomRotation(),
         scale: 0.7,
         link: "#education",
@@ -82,7 +102,7 @@ export const UniverseScene: React.FC = () => {
         id: 4,
         title: "Experience",
         description: "Professional journey",
-        position: randomPosition(),
+        position: randomGalaxyPosition(),
         rotation: randomRotation(),
         scale: 0.85,
         link: "#experience",
@@ -92,7 +112,7 @@ export const UniverseScene: React.FC = () => {
         id: 5,
         title: "Achievements",
         description: "Notable accomplishments",
-        position: randomPosition(),
+        position: randomGalaxyPosition(),
         rotation: randomRotation(),
         scale: 0.75,
         link: "#achievements",
@@ -102,7 +122,7 @@ export const UniverseScene: React.FC = () => {
         id: 6,
         title: "Projects",
         description: "Featured work",
-        position: randomPosition(),
+        position: randomGalaxyPosition(),
         rotation: randomRotation(),
         scale: 0.82,
         link: "#projects",
@@ -112,12 +132,12 @@ export const UniverseScene: React.FC = () => {
         id: 7,
         title: "Contact",
         description: "Get in touch",
-        position: randomPosition(),
+        position: blackholePosition,
         rotation: randomRotation(),
         scale: 1.0,
         link: "#contact",
         cameraOffset: randomCameraOffset(),
-      },
+      }
     ];
 
     return items;
