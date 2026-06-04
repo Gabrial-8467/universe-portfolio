@@ -11,18 +11,23 @@ import "./App.css";
 
 function DistanceTracker({ onDistanceUpdate, currentScene }: { onDistanceUpdate: (distance: number) => void; currentScene: string }) {
   const prevPosRef = useRef(new THREE.Vector3());
+  const initializedRef = useRef(false);
 
   useFrame((state) => {
-    // Only track distance in universe scene
-    if (currentScene !== 'universe') {
-      // Reset position when leaving universe scene
+    if (currentScene !== "universe") {
+      initializedRef.current = false;
+      return;
+    }
+
+    if (!initializedRef.current) {
       prevPosRef.current.copy(state.camera.position);
+      initializedRef.current = true;
       return;
     }
 
     const currentPos = state.camera.position;
     const distance = currentPos.distanceTo(prevPosRef.current);
-    
+
     if (distance > 0.001) {
       onDistanceUpdate(distance);
       prevPosRef.current.copy(currentPos);
@@ -212,7 +217,7 @@ export default function App() {
       {/* Fixed Spacecraft in bottom right corner - Universe Scene only */}
       {currentScene === 'universe' && (
         <img 
-          src="src/assets/images/spacecraft.png"
+          src="/images/spacecraft.png"
           alt="Spacecraft" 
           style={{ 
             position: 'fixed', 
