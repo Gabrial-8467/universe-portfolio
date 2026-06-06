@@ -2,11 +2,12 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useState, useEffect, useRef } from "react";
 import * as THREE from "three";
 import { Bloom, ChromaticAberration, EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
-import { useUniverseStore } from "./store";
+import { useUniverseStore } from "./store/universe";
 import CameraController from "./components/CameraController";
 import AudioController from "./components/AudioController";
 import IntroScene from "./scenes/IntroScene";
 import UniverseScene from "./scenes/UniverseScene";
+import CockpitScene from "./scenes/CockpitScene";
 import "./App.css";
 
 function DistanceTracker({ onDistanceUpdate, currentScene }: { onDistanceUpdate: (distance: number) => void; currentScene: string }) {
@@ -42,24 +43,29 @@ function AppContent({ onDistanceUpdate }: { onDistanceUpdate: (distance: number)
 
   return (
     <>
-      <CameraController enableZoom={!isAnimating} zoomSpeed={10} enableRotate={!isAnimating} rotateSpeed={0.5} />
+      {currentScene === "universe" && (
+        <CameraController enableZoom={!isAnimating} zoomSpeed={10} enableRotate={!isAnimating} rotateSpeed={0.5} />
+      )}
       <AudioController />
       <DistanceTracker onDistanceUpdate={onDistanceUpdate} currentScene={currentScene} />
-      <EffectComposer>
-        <Bloom luminanceThreshold={0.62} luminanceSmoothing={0.9} intensity={1.05} levels={6} mipmapBlur />
-        <ChromaticAberration offset={[0.00018, 0.00012]} />
-        <Noise opacity={0.002} />
-        <Vignette darkness={0.48} eskil={false} />
-      </EffectComposer>
+      {currentScene !== "cockpit" && (
+        <EffectComposer>
+          <Bloom luminanceThreshold={0.62} luminanceSmoothing={0.9} intensity={1.05} levels={6} mipmapBlur />
+          <ChromaticAberration offset={[0.00018, 0.00012]} />
+          <Noise opacity={0.002} />
+          <Vignette darkness={0.48} eskil={false} />
+        </EffectComposer>
+      )}
 
       {currentScene === "intro" && <IntroScene />}
       {currentScene === "universe" && <UniverseScene />}
+      {currentScene === "cockpit" && <CockpitScene />}
     </>
   );
 }
 
 export default function App() {
-  const { currentScene, audioEnabled, setAudioEnabled } = useUniverseStore();
+  const { currentScene, audioEnabled, setAudioEnabled, setCurrentScene } = useUniverseStore();
   const [showGuidance, setShowGuidance] = useState(false);
   const [displayedText, setDisplayedText] = useState('');
   const [typingComplete, setTypingComplete] = useState(false);
@@ -74,6 +80,7 @@ export default function App() {
   const lightYears = (distanceTraveled / LY_SCALE).toFixed(2);
 
   useEffect(() => {
+    const timer = window.setTimeout(() => {
     if (currentScene === 'universe') {
       setShowGuidance(true);
       setDisplayedText('');
@@ -83,6 +90,9 @@ export default function App() {
       setShowGuidance(false);
       setDistanceTraveled(0);
     }
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [currentScene]);
 
   useEffect(() => {
@@ -94,13 +104,14 @@ export default function App() {
       }, 50);
       return () => clearTimeout(timer);
     } else {
-      setTypingComplete(true);
+      const timer = window.setTimeout(() => setTypingComplete(true), 0);
+      return () => window.clearTimeout(timer);
     }
   }, [displayedText, showGuidance]);
 
   return (
     <>
-      <div className="app-container">
+      <div className={`app-container scene-${currentScene}`}>
         <Canvas
           camera={{
             position: [0, 0, 5],
@@ -126,7 +137,7 @@ export default function App() {
           <AppContent onDistanceUpdate={handleDistanceUpdate} />
         </Canvas>
 
-        <div className="ui-overlay">
+        {currentScene !== "cockpit" && <div className="ui-overlay">
           <div className="mission-readout">
             <div className="readout-kicker">
               <span>{currentScene === "intro" ? "Genesis sequence" : "Infinite starfield"}</span>
@@ -168,10 +179,10 @@ export default function App() {
               <p style={{ fontSize: '12px', color: 'rgba(186, 222, 255, 0.7)', margin: '5px 0 0 0' }}>Light Years</p>
             </div>
           )}
-        </div>
+        </div>}
 
         {/* Fixed Screen Center Crosshair */}
-        <div
+        {currentScene === "universe" && <div
           style={{
             position: "fixed",
             top: "50%",
@@ -211,24 +222,32 @@ export default function App() {
               }}
             />
           </div>
-        </div>
+        </div>}
 
         {/* Fixed Spacecraft in bottom right corner - Universe Scene only */}
         {currentScene === 'universe' && (
-          <img
-            src="/images/spacecraft.png"
-            alt="Spacecraft"
-            style={{
-              position: 'fixed',
-              left: '20px',
-              bottom: '20px',
-              pointerEvents: 'none',
-              zIndex: 1000,
-              width: '200px',
-              height: 'auto',
-              filter: 'drop-shadow(0 0 10px rgba(255, 207, 122, 0.6))'
+          <button
+            type="button"
+            onClick={() => {
+              setShowGuidance(false);
+              setCurrentScene("cockpit");
             }}
-          />
+            aria-label="Enter spacecraft cockpit"
+            className="spacecraft-entry"
+          >
+            <img src="/images/spacecraft.png" alt="Spacecraft" />
+          </button>
+        )}
+
+        {currentScene === "cockpit" && (
+          <button
+            type="button"
+            className="cockpit-exit"
+            onClick={() => setCurrentScene("universe")}
+            aria-label="Exit cockpit"
+          >
+            EXIT COCKPIT
+          </button>
         )}
 
         {/* Universe Scene Guidance Text */}
@@ -348,4 +367,3 @@ export default function App() {
     </>
   );
 }
-

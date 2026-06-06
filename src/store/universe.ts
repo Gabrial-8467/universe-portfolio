@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
 interface UniverseStore {
-  currentScene: "intro" | "universe";
+  currentScene: "cockpit" | "intro" | "universe";
   audioEnabled: boolean;
   isTraveling: boolean;
   isAnimating: boolean;
-  setCurrentScene: (scene: "intro" | "universe") => void;
+  setCurrentScene: (scene: "cockpit" | "intro" | "universe") => void;
   setAudioEnabled: (enabled: boolean) => void;
   setIsTraveling: (traveling: boolean) => void;
   setIsAnimating: (animating: boolean) => void;

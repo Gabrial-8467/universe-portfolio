@@ -5,7 +5,7 @@ import * as THREE from "three";
 import Starfield from "../../components/Starfield";
 import Galaxy from "../../components/Galaxy";
 import Blackhole from "../../components/Blackhole";
-import { useUniverseStore } from "../../store";
+import { useUniverseStore } from "../../store/universe";
 
 interface PortfolioItem {
   id: number;

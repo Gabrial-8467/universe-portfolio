@@ -40,10 +40,810 @@ body {
   display: none;
 }
 
+.app-container.scene-cockpit::before {
+  background:
+    radial-gradient(ellipse at 50% 42%, transparent 0 52%, rgba(0, 5, 10, 0.14) 82%, rgba(0, 3, 7, 0.42) 100%),
+    linear-gradient(180deg, rgba(6, 16, 23, 0.08), transparent 32%, rgba(0, 4, 8, 0.12));
+}
+
 canvas {
   display: block;
   width: 100% !important;
   height: 100% !important;
+}
+
+.spacecraft-entry {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 1000;
+  width: 200px;
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  filter: drop-shadow(0 0 10px rgba(255, 207, 122, 0.6));
+}
+
+.spacecraft-entry:hover {
+  filter: drop-shadow(0 0 18px rgba(255, 207, 122, 0.9));
+  transform: translateY(-3px) scale(1.03);
+}
+
+.spacecraft-entry img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.cockpit-exit {
+  position: fixed;
+  top: 22px;
+  right: 22px;
+  z-index: 1100;
+  padding: 11px 16px;
+  border: 1px solid rgba(105, 214, 255, 0.65);
+  border-radius: 0;
+  background: rgba(2, 13, 22, 0.82);
+  color: #c8f3ff;
+  font: 800 11px/1 "Consolas", "Courier New", monospace;
+  letter-spacing: 0.16em;
+  box-shadow: 0 0 18px rgba(68, 199, 245, 0.22), inset 0 0 16px rgba(62, 188, 236, 0.08);
+  cursor: pointer;
+}
+
+.cockpit-exit:hover {
+  background: rgba(21, 76, 101, 0.86);
+  color: #ffffff;
+}
+
+.dashboard-html {
+  pointer-events: none;
+  font-family: "Consolas", "Courier New", monospace;
+}
+
+.instrument-html {
+  pointer-events: none;
+  font-family: "Consolas", "Courier New", monospace;
+}
+
+.instrument-screen {
+  width: 330px;
+  height: 244px;
+  padding: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(94, 220, 255, 0.65);
+  background:
+    repeating-linear-gradient(0deg, rgba(68, 197, 239, 0.045) 0 1px, transparent 1px 4px),
+    radial-gradient(circle at 50% 45%, rgba(13, 95, 130, 0.3), rgba(1, 12, 20, 0.94) 70%);
+  color: #63ddff;
+  box-shadow: inset 0 0 18px rgba(35, 177, 225, 0.25), 0 0 10px rgba(49, 190, 238, 0.18);
+  text-shadow: 0 0 5px rgba(76, 211, 255, 0.65);
+}
+
+.instrument-screen header,
+.instrument-screen footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.instrument-screen header {
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(79, 205, 247, 0.35);
+}
+
+.instrument-screen footer {
+  margin-top: 6px;
+  color: rgba(134, 225, 255, 0.72);
+}
+
+.radar {
+  position: relative;
+  width: 156px;
+  height: 156px;
+  margin: 8px auto 0;
+  overflow: hidden;
+  border: 1px solid #4ed5ff;
+  border-radius: 50%;
+  background: repeating-radial-gradient(circle, transparent 0 15px, rgba(76, 207, 248, 0.35) 16px 17px);
+}
+
+.radar::before,
+.radar::after {
+  content: "";
+  position: absolute;
+  background: rgba(80, 215, 255, 0.5);
+}
+
+.radar::before { width: 1px; height: 100%; left: 50%; }
+.radar::after { width: 100%; height: 1px; top: 50%; }
+
+.radar > span {
+  position: absolute;
+  inset: 50% 50% 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0 0;
+  background: linear-gradient(35deg, rgba(74, 211, 255, 0.32), transparent 60%);
+  animation: radar-sweep 2.8s linear infinite;
+}
+
+.radar i {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #d8f8ff;
+  box-shadow: 0 0 6px #59d9ff;
+}
+
+.radar i:nth-child(1) { left: 25%; top: 35%; }
+.radar i:nth-child(2) { left: 68%; top: 26%; }
+.radar i:nth-child(3) { left: 61%; top: 69%; }
+.radar i:nth-child(4) { left: 40%; top: 58%; }
+
+.systems-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.systems-grid i {
+  height: 32px;
+  border: 1px solid rgba(76, 211, 255, 0.55);
+  background: linear-gradient(135deg, rgba(65, 207, 250, 0.36), transparent);
+}
+
+.system-bars {
+  display: grid;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.system-bars i {
+  height: 7px;
+  background: linear-gradient(90deg, #48d2ff 75%, rgba(69, 193, 232, 0.12) 75%);
+}
+
+.telemetry-display {
+  width: 300px;
+  height: 198px;
+}
+
+.telemetry-wave {
+  position: relative;
+  height: 82px;
+  margin-top: 12px;
+  background:
+    linear-gradient(90deg, rgba(74, 211, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(rgba(74, 211, 255, 0.12) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
+.telemetry-wave i {
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  height: 1px;
+  background: #62dfff;
+  transform: skewY(-12deg);
+  box-shadow: 20px 8px #62dfff, 45px -4px #62dfff, 70px 12px #62dfff, 100px 2px #62dfff;
+}
+
+.telemetry-wave i:nth-child(1) { top: 24px; }
+.telemetry-wave i:nth-child(2) { top: 45px; opacity: 0.5; transform: skewY(15deg); }
+.telemetry-wave i:nth-child(3) { top: 64px; opacity: 0.3; }
+
+.tiny-columns {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  align-items: end;
+  gap: 3px;
+  height: 38px;
+}
+
+.tiny-columns i {
+  height: 50%;
+  background: #4dd5ff;
+}
+
+.tiny-columns i:nth-child(2n) { height: 85%; }
+.tiny-columns i:nth-child(3n) { height: 32%; }
+
+.nav-orbits {
+  position: relative;
+  width: 112px;
+  height: 112px;
+  margin: 10px auto 0;
+  border: 1px solid #52d7ff;
+  border-radius: 50%;
+}
+
+.nav-orbits i {
+  position: absolute;
+  inset: 13px;
+  border: 1px solid rgba(82, 215, 255, 0.65);
+  border-radius: 50%;
+}
+
+.nav-orbits i:nth-child(2) { inset: 37px; }
+
+.nav-orbits span {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  top: 10px;
+  left: 54px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 7px #58dbff;
+  transform-origin: 2px 46px;
+  animation: orbit-spin 3s linear infinite;
+}
+
+.hud-display {
+  width: 238px;
+  height: 158px;
+  background: rgba(2, 17, 25, 0.5);
+}
+
+.hud-reticle {
+  position: relative;
+  width: 102px;
+  height: 102px;
+  margin: 8px auto;
+  border: 1px solid rgba(79, 218, 255, 0.75);
+  border-radius: 50%;
+}
+
+.hud-reticle::before,
+.hud-reticle::after {
+  content: "";
+  position: absolute;
+  background: #5bdcff;
+}
+
+.hud-reticle::before { width: 136px; height: 1px; left: -18px; top: 50px; }
+.hud-reticle::after { width: 1px; height: 136px; left: 50px; top: -18px; }
+
+.hud-reticle i {
+  position: absolute;
+  inset: 36px;
+  border: 1px solid #9beaff;
+  transform: rotate(45deg);
+}
+
+.hud-reticle span {
+  position: absolute;
+  top: 110px;
+  left: -12px;
+  width: 126px;
+  font-size: 8px;
+  text-align: center;
+}
+
+.dashboard-hologram {
+  position: relative;
+  width: 560px;
+  min-height: 264px;
+  padding: 30px 34px;
+  overflow: hidden;
+  border: 1px solid rgba(99, 211, 255, 0.66);
+  background:
+    repeating-linear-gradient(0deg, rgba(87, 199, 241, 0.035) 0 1px, transparent 1px 4px),
+    linear-gradient(135deg, rgba(3, 29, 42, 0.92), rgba(2, 12, 20, 0.78));
+  box-shadow: 0 0 18px rgba(55, 192, 246, 0.42), inset 0 0 42px rgba(34, 156, 205, 0.13);
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+  color: #dff7ff;
+  pointer-events: auto;
+  text-shadow: 0 0 10px rgba(77, 200, 247, 0.32);
+  animation: dashboard-project 420ms ease-out both;
+}
+
+.dashboard-hologram::after {
+  content: "";
+  position: absolute;
+  inset: -45% 0 auto;
+  height: 38%;
+  background: linear-gradient(180deg, transparent, rgba(106, 220, 255, 0.09), transparent);
+  animation: dashboard-scan 3s linear infinite;
+  pointer-events: none;
+}
+
+.hologram-kicker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #65d1fa;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.hologram-kicker i {
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, #60c9f1, transparent);
+}
+
+.dashboard-hologram h1 {
+  margin: 20px 0 22px;
+  color: #eefbff;
+  font-size: 32px;
+  line-height: 1;
+  letter-spacing: 0.1em;
+}
+
+.identity-hologram label {
+  display: block;
+  margin-bottom: 7px;
+  color: rgba(196, 235, 249, 0.68);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+
+.identity-hologram input {
+  width: calc(100% - 128px);
+  height: 50px;
+  padding: 0 12px;
+  border: 1px solid rgba(101, 207, 247, 0.58);
+  border-radius: 0;
+  outline: none;
+  background: rgba(1, 14, 22, 0.78);
+  color: #e8faff;
+  font: 700 16px/1 "Consolas", "Courier New", monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.identity-hologram input:focus {
+  border-color: #b4ecff;
+  box-shadow: 0 0 15px rgba(64, 195, 244, 0.35);
+}
+
+.identity-hologram button {
+  width: 118px;
+  height: 50px;
+  margin-left: 7px;
+  padding: 0;
+  border: 1px solid #68cff5;
+  border-radius: 0;
+  background: rgba(36, 144, 184, 0.22);
+  color: #dff7ff;
+  font: 700 12px/1 "Consolas", "Courier New", monospace;
+  letter-spacing: 0.13em;
+}
+
+.identity-hologram button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.boot-hologram {
+  text-align: center;
+}
+
+.boot-hologram .hologram-kicker {
+  margin-top: 12px;
+}
+
+.nova-core-orb {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  margin: 0 auto;
+  border: 1px solid #77d9ff;
+  border-radius: 50%;
+  box-shadow: 0 0 14px #4fc8f7, inset 0 0 16px rgba(80, 204, 249, 0.5);
+  animation: nova-core-spin 2.4s linear infinite;
+}
+
+.nova-core-orb span {
+  position: absolute;
+  inset: 9px;
+  border: 1px dashed #a2e8ff;
+  border-radius: 50%;
+  background: radial-gradient(circle, #e8fbff, #48bfea 18%, transparent 62%);
+}
+
+.boot-blocks {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+}
+
+.boot-blocks i {
+  height: 12px;
+  border: 1px solid rgba(83, 184, 224, 0.35);
+  background: rgba(45, 139, 178, 0.08);
+}
+
+.boot-blocks i.active {
+  border-color: #9de6ff;
+  background: #5acbf5;
+  box-shadow: 0 0 10px rgba(80, 202, 247, 0.72);
+}
+
+.boot-readout {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 11px;
+  color: rgba(191, 232, 247, 0.64);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+}
+
+.boot-readout strong {
+  color: #9de7ff;
+}
+
+.online-hologram {
+  width: 600px;
+  min-height: 286px;
+}
+
+.online-layout {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  align-items: center;
+  gap: 18px;
+  margin-top: 25px;
+}
+
+.online-layout .nova-core-orb {
+  width: 64px;
+  height: 64px;
+  margin: 0;
+}
+
+.online-layout h1 {
+  margin: 0 0 10px;
+  font-size: 29px;
+}
+
+.online-layout strong {
+  color: #85dcfd;
+  font-size: 15px;
+  letter-spacing: 0.1em;
+}
+
+.dashboard-status {
+  display: flex;
+  gap: 24px;
+  margin-top: 26px;
+  color: rgba(211, 240, 250, 0.76);
+  font-size: 10px;
+  letter-spacing: 0.09em;
+}
+
+.dashboard-status span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.dashboard-status i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #65e0b1;
+  box-shadow: 0 0 9px #65e0b1;
+}
+
+@keyframes dashboard-project {
+  from { opacity: 0; transform: scaleY(0.08); filter: brightness(2); }
+  to { opacity: 1; transform: scaleY(1); filter: brightness(1); }
+}
+
+@keyframes dashboard-scan {
+  to { top: 125%; }
+}
+
+@keyframes nova-core-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes radar-sweep {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes orbit-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 760px) {
+  .dashboard-hologram,
+  .online-hologram {
+    width: 360px;
+    padding: 20px;
+  }
+
+  .dashboard-hologram h1 {
+    font-size: 20px;
+  }
+}
+
+.cockpit-html-layer {
+  pointer-events: none;
+  font-family: "Consolas", "Courier New", monospace;
+}
+
+.cockpit-interface {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: clamp(18px, 4vw, 52px);
+  pointer-events: none;
+}
+
+.cockpit-interface-online {
+  align-items: end;
+  justify-items: start;
+}
+
+.cockpit-panel {
+  position: relative;
+  width: min(92vw, 520px);
+  padding: clamp(22px, 4vw, 38px);
+  overflow: hidden;
+  border: 1px solid rgba(95, 197, 246, 0.62);
+  border-left-width: 3px;
+  background:
+    linear-gradient(135deg, rgba(7, 26, 39, 0.96), rgba(2, 10, 18, 0.9)),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(79, 190, 242, 0.03) 3px 4px);
+  box-shadow: 0 0 0 1px rgba(63, 160, 205, 0.12), 0 0 36px rgba(25, 139, 194, 0.2), inset 0 0 42px rgba(20, 121, 169, 0.08);
+  clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
+  color: #d9f4ff;
+  pointer-events: auto;
+  animation: cockpit-panel-enter 500ms ease-out both;
+}
+
+.cockpit-panel::before,
+.cockpit-panel::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.cockpit-panel::before {
+  inset: 7px;
+  border: 1px solid rgba(78, 173, 216, 0.12);
+  clip-path: inherit;
+}
+
+.cockpit-panel::after {
+  top: 0;
+  left: -80%;
+  width: 70%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #8bdcff, transparent);
+  animation: cockpit-scan 3.4s linear infinite;
+}
+
+.panel-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #69c9f5;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.panel-eyebrow i {
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, rgba(105, 201, 245, 0.8), transparent);
+}
+
+.cockpit-panel h1 {
+  margin: 24px 0 28px;
+  color: #f1fbff;
+  font-size: clamp(23px, 5vw, 35px);
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 20px rgba(86, 198, 249, 0.35);
+}
+
+.commander-panel label {
+  display: block;
+  margin-bottom: 9px;
+  color: rgba(192, 228, 244, 0.64);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+}
+
+.commander-panel input {
+  width: 100%;
+  height: 52px;
+  padding: 0 15px;
+  border: 1px solid rgba(94, 194, 239, 0.42);
+  border-radius: 0;
+  outline: none;
+  background: rgba(2, 12, 20, 0.8);
+  color: #e5f8ff;
+  font: 700 15px/1 "Consolas", "Courier New", monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.commander-panel input:focus {
+  border-color: #75d2fa;
+  box-shadow: 0 0 18px rgba(53, 176, 232, 0.22);
+}
+
+.commander-panel button {
+  width: 100%;
+  margin-top: 14px;
+  border: 1px solid rgba(110, 208, 250, 0.75);
+  border-radius: 0;
+  background: rgba(25, 126, 173, 0.2);
+  color: #d9f6ff;
+  font: 700 11px/1 "Consolas", "Courier New", monospace;
+  letter-spacing: 0.18em;
+}
+
+.commander-panel button:hover:not(:disabled) {
+  border-color: #b8edff;
+  background: rgba(45, 162, 214, 0.32);
+  box-shadow: 0 0 24px rgba(54, 178, 232, 0.25);
+}
+
+.commander-panel button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.commander-panel p {
+  margin: 18px 0 0;
+  color: rgba(173, 214, 231, 0.38);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.nova-boot {
+  text-align: center;
+}
+
+.nova-boot .panel-eyebrow {
+  margin-top: 18px;
+}
+
+.nova-orb {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto;
+  border: 1px solid #72d3ff;
+  border-radius: 50%;
+  background: radial-gradient(circle, #d4f5ff 0 4%, #35b4ed 8%, rgba(27, 148, 204, 0.1) 48%, transparent 70%);
+  box-shadow: 0 0 12px #50c5fa, 0 0 34px rgba(51, 175, 230, 0.58);
+  animation: nova-pulse 1.2s ease-in-out infinite;
+}
+
+.boot-segments {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 7px;
+}
+
+.boot-segments span {
+  height: 8px;
+  border: 1px solid rgba(79, 178, 222, 0.3);
+  background: rgba(45, 135, 178, 0.08);
+}
+
+.boot-segments span.active {
+  background: #63caf7;
+  box-shadow: 0 0 14px rgba(64, 188, 241, 0.7);
+}
+
+.boot-progress {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  color: rgba(181, 223, 240, 0.58);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.nova-online {
+  width: min(90vw, 440px);
+  padding: 22px 26px;
+}
+
+.nova-online h1 {
+  margin: 18px 0 7px;
+  font-size: clamp(18px, 4vw, 25px);
+}
+
+.nova-online > strong {
+  color: #8edbff;
+  font-size: clamp(15px, 3vw, 20px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.system-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin-top: 20px;
+  color: rgba(213, 239, 249, 0.7);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.system-status span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.system-status i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #63d6a0;
+  box-shadow: 0 0 10px #63d6a0;
+}
+
+.nova-hologram-label {
+  pointer-events: none;
+}
+
+.nova-hologram-label div {
+  width: 112px;
+  color: #9ce2ff;
+  font-family: "Consolas", "Courier New", monospace;
+  text-align: center;
+  text-shadow: 0 0 8px #2cbaf7;
+}
+
+.nova-hologram-label span,
+.nova-hologram-label strong {
+  display: block;
+  letter-spacing: 0.16em;
+}
+
+.nova-hologram-label span {
+  font-size: 13px;
+}
+
+.nova-hologram-label strong {
+  margin-top: 8px;
+  color: #d8f5ff;
+  font-size: 9px;
+}
+
+.nova-hologram-label i {
+  display: block;
+  width: 64px;
+  height: 1px;
+  margin: 9px auto 0;
+  background: #72d6ff;
+  box-shadow: 0 0 8px #3cbff7;
+}
+
+@keyframes cockpit-panel-enter {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes cockpit-scan {
+  to { left: 120%; }
+}
+
+@keyframes nova-pulse {
+  50% { transform: scale(1.08); opacity: 0.8; }
 }
 
 .ui-overlay {

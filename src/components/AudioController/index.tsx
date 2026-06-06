@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { useUniverseStore } from "../../store";
+import { useUniverseStore } from "../../store/universe";
 import aumAudio from "../../assets/audio/aum.mp3";
 
 export const AudioController: React.FC = () => {

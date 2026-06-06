@@ -3,7 +3,7 @@ import type { MutableRefObject } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
-import { useUniverseStore } from "../../store";
+import { useUniverseStore } from "../../store/universe";
 
 interface IntroState {
   coreScale: number;
