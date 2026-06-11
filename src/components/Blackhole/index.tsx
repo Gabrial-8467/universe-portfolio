@@ -7,6 +7,7 @@ interface BlackholeProps {
   position?: [number, number, number];
   scale?: number;
   rotation?: [number, number, number];
+  raycast?: any;
 }
 
 const BLACKHOLE_BASE_SCALE = 28;
@@ -15,6 +16,7 @@ export const Blackhole: React.FC<BlackholeProps> = ({
   position = [0, 0, 0],
   scale = 1,
   rotation = [0, 0, 0],
+  raycast,
 }) => {
   const { scene } = useGLTF("/blackholeModel/blackhole.glb");
   const blackholeRef = useRef<THREE.Group>(null);
@@ -34,6 +36,7 @@ export const Blackhole: React.FC<BlackholeProps> = ({
       position={position}
       scale={scale * BLACKHOLE_BASE_SCALE}
       rotation={rotation}
+      raycast={raycast}
     />
   );
 };

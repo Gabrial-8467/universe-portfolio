@@ -7,6 +7,7 @@ interface GalaxyProps {
   position?: [number, number, number];
   scale?: number;
   rotation?: [number, number, number];
+  raycast?: any;
 }
 
 const GALAXY_BASE_SCALE = 28;
@@ -15,6 +16,7 @@ export const Galaxy: React.FC<GalaxyProps> = ({
   position = [0, 0, 0],
   scale = 1,
   rotation = [0, 0, 0],
+  raycast,
 }) => {
   const { scene } = useGLTF("/galaxyModel/galaxy.glb");
   const galaxyRef = useRef<THREE.Object3D>(null);
@@ -47,6 +49,7 @@ export const Galaxy: React.FC<GalaxyProps> = ({
       position={position}
       scale={scale * GALAXY_BASE_SCALE}
       rotation={rotation}
+      raycast={raycast}
     />
   );
 };

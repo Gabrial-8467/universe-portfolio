@@ -1,9 +1,9 @@
 import { r as __toESM, t as __commonJSMin } from "./chunk-CYJPkc-J.js";
 import { t as require_react } from "./react.js";
+import { t as require_jsx_runtime } from "./react_jsx-runtime.js";
 import { t as require_scheduler } from "./scheduler-CWuCHEyl.js";
 import { $i as OrthographicCamera, Bs as Vector2, Eo as SRGBColorSpace, Oo as Scene, Vr as LinearSRGBColorSpace, Vs as Vector3, c as three_module_exports, ct as Color, do as Raycaster, ko as ShaderMaterial, o as WebGLRenderer, ra as PerspectiveCamera, st as Clock, ut as ColorManagement, vr as Layers } from "./three.module-cLrRfqXO.js";
 import { t as createStore$1 } from "./vanilla-CAYEPk1R.js";
-import { t as require_jsx_runtime } from "./react_jsx-runtime.js";
 //#region node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.development.js
 /**
 * @license React
@@ -216,8 +216,8 @@ var clear = (keys) => {
 };
 //#endregion
 //#region node_modules/its-fine/dist/index.js
-var import_scheduler = /* @__PURE__ */ __toESM(require_scheduler());
 var import_jsx_runtime = require_jsx_runtime();
+var import_scheduler = /* @__PURE__ */ __toESM(require_scheduler());
 /* @__PURE__ */ (() => {
 	var e, t;
 	return typeof window != "undefined" && (((e = window.document) == null ? void 0 : e.createElement) || ((t = window.navigator) == null ? void 0 : t.product) === "ReactNative");
@@ -9573,4 +9573,4 @@ function Canvas(props) {
 //#endregion
 export { clear as A, unmountComponentAtNode as C, useLoader as D, useInstanceHandle as E, suspend as M, useStore as O, threeTypes as S, useGraph as T, flushGlobalEffects as _, addEffect as a, invalidate as b, applyProps as c, createEvents as d, createPointerEvents as f, extend as g, dispose as h, addAfterEffect as i, preload as j, useThree as k, buildGraph as l, createRoot as m, _roots as n, addTail as o, createPortal as p, act as r, advance as s, Canvas as t, context as u, flushSync as v, useFrame as w, reconciler as x, getRootState as y };
 
-//# sourceMappingURL=react-three-fiber.esm-CU1xL2tD.js.map
+//# sourceMappingURL=react-three-fiber.esm-du9KLhEB.js.map

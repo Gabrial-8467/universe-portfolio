@@ -84,3 +84,5 @@ To customize the portfolio items, edit the `portfolioItems` array in `src/scenes
 ## Audio
 
 The project uses an ambient audio file (`src/assets/audio/aum.mp3`) that loops when enabled. Audio is on by default at 20% volume.
+
+

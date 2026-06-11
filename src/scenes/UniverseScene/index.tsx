@@ -20,123 +20,114 @@ interface PortfolioItem {
 
 export const UniverseScene: React.FC = () => {
   const { camera } = useThree();
-  const { setIsTraveling, setIsAnimating } = useUniverseStore();
+  const { 
+    setIsTraveling, 
+    setIsAnimating, 
+    travelTargetId, 
+    travelLink, 
+    setTravelTarget 
+  } = useUniverseStore();
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   const LY_SCALE = 100;
 
-  const randomGalaxyPosition = (
-    minLY = 20,
-    maxLY = 40
-  ): [number, number, number] => {
-    const distanceLY = minLY + Math.random() * (maxLY - minLY);
-
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.random() * Math.PI;
-
-    const radius = distanceLY * LY_SCALE;
-
-    return [
-      radius * Math.sin(phi) * Math.cos(theta),
-      radius * Math.sin(phi) * Math.sin(theta),
-      radius * Math.cos(phi),
-    ];
-  };
-
-  const blackholePosition: [number, number, number] = [
-    51 * LY_SCALE,
-    0,
-    0,
-  ];
-
-  const randomRotation = (): [number, number, number] => [
-    0,
-    Math.random() * Math.PI * 2,
-    0,
-  ];
-
-  const randomCameraOffset = (): [number, number, number] => {
-    const direction = new THREE.Vector3(
-      Math.random() * 2 - 1,
-      Math.random() * 2 - 1,
-      Math.random() * 2 - 1
-    ).normalize();
-    const distance = 600 + Math.random() * 1200;
-    return [direction.x * distance, direction.y * distance, direction.z * distance];
-  };
-
-  // Generate portfolio items with random positions
+  // Generate portfolio items with fixed positions
   const portfolioItems = useMemo<PortfolioItem[]>(() => {
+    const scaleFactor = LY_SCALE;
+
+    // Helper to calculate positions in a hexagon of radius 30 LY.
+    // The distance between adjacent points will be exactly 30 LY.
+    const getHexPosition = (index: number): [number, number, number] => {
+      const angle = (index * Math.PI) / 3; // 60 degrees in radians
+      return [
+        Math.cos(angle) * 30 * scaleFactor,
+        0,
+        Math.sin(angle) * 30 * scaleFactor
+      ];
+    };
+
+    // Calculate a consistent camera arrival offset from the outside looking in
+    const getFixedCameraOffset = (pos: [number, number, number]): [number, number, number] => {
+      const dir = new THREE.Vector3(...pos).normalize();
+      return [dir.x * 1000, 300, dir.z * 1000];
+    };
+
+    const blackholePos: [number, number, number] = [
+      0,
+      0,
+      -40 * scaleFactor
+    ];
+
     const items: PortfolioItem[] = [
       {
-        cameraOffset: randomCameraOffset(),
         id: 1,
         title: "About",
         description: "Learn more about me",
-        position: randomGalaxyPosition(),
-        rotation: randomRotation(),
+        position: getHexPosition(0),
+        rotation: [0, 0, 0],
         scale: 1.2,
         link: "#about",
+        cameraOffset: getFixedCameraOffset(getHexPosition(0)),
       },
       {
         id: 2,
         title: "Skills",
         description: "My technical expertise",
-        position: randomGalaxyPosition(),
-        rotation: randomRotation(),
+        position: getHexPosition(1),
+        rotation: [0, -Math.PI / 3, 0],
         scale: 0.9,
         link: "#skills",
-        cameraOffset: randomCameraOffset(),
+        cameraOffset: getFixedCameraOffset(getHexPosition(1)),
       },
       {
         id: 3,
         title: "Education",
         description: "Academic background",
-        position: randomGalaxyPosition(),
-        rotation: randomRotation(),
+        position: getHexPosition(2),
+        rotation: [0, -2 * Math.PI / 3, 0],
         scale: 0.7,
         link: "#education",
-        cameraOffset: randomCameraOffset(),
+        cameraOffset: getFixedCameraOffset(getHexPosition(2)),
       },
       {
         id: 4,
         title: "Experience",
         description: "Professional journey",
-        position: randomGalaxyPosition(),
-        rotation: randomRotation(),
+        position: getHexPosition(3),
+        rotation: [0, Math.PI, 0],
         scale: 0.85,
         link: "#experience",
-        cameraOffset: randomCameraOffset(),
+        cameraOffset: getFixedCameraOffset(getHexPosition(3)),
       },
       {
         id: 5,
         title: "Achievements",
         description: "Notable accomplishments",
-        position: randomGalaxyPosition(),
-        rotation: randomRotation(),
+        position: getHexPosition(4),
+        rotation: [0, 2 * Math.PI / 3, 0],
         scale: 0.75,
         link: "#achievements",
-        cameraOffset: randomCameraOffset(),
+        cameraOffset: getFixedCameraOffset(getHexPosition(4)),
       },
       {
         id: 6,
         title: "Projects",
         description: "Featured work",
-        position: randomGalaxyPosition(),
-        rotation: randomRotation(),
+        position: getHexPosition(5),
+        rotation: [0, Math.PI / 3, 0],
         scale: 0.82,
         link: "#projects",
-        cameraOffset: randomCameraOffset(),
+        cameraOffset: getFixedCameraOffset(getHexPosition(5)),
       },
       {
         id: 7,
         title: "Contact",
         description: "Get in touch",
-        position: blackholePosition,
-        rotation: randomRotation(),
+        position: blackholePos,
+        rotation: [0, 0, 0],
         scale: 1.0,
         link: "#contact",
-        cameraOffset: randomCameraOffset(),
+        cameraOffset: [0, 300, -3500],
       }
     ];
 
@@ -147,15 +138,27 @@ export const UniverseScene: React.FC = () => {
     () => portfolioItems.map((item) => item.position),
     [portfolioItems]
   );
-  const [travelTargetId, setTravelTargetId] = useState<number | null>(null);
-  const [travelLink, setTravelLink] = useState<string | null>(null);
   const cameraZoom = useRef(1);
+  const arrivedCameraPos = useRef<THREE.Vector3 | null>(null);
+  const shouldResetZoom = useRef(false);
 
   useEffect(() => {
     camera.position.set(0, 0, 900);
     camera.lookAt(0, 0, 0);
     cameraZoom.current = 1;
+    arrivedCameraPos.current = null;
+    shouldResetZoom.current = false;
   }, [camera]);
+
+  useEffect(() => {
+    if (travelTargetId !== null) {
+      setIsTraveling(true);
+      setIsAnimating(true);
+      cameraZoom.current = 1;
+      arrivedCameraPos.current = null;
+      shouldResetZoom.current = false;
+    }
+  }, [travelTargetId, setIsTraveling, setIsAnimating]);
 
   useFrame((_, delta: number) => {
     const perspectiveCamera = camera as THREE.PerspectiveCamera;
@@ -181,7 +184,9 @@ export const UniverseScene: React.FC = () => {
         if (distance < 2) {
           setIsTraveling(false);
           setIsAnimating(false);
-          setTravelTargetId(null);
+          setTravelTarget(null, null);
+          arrivedCameraPos.current = desiredCameraPos.clone();
+          shouldResetZoom.current = false;
           if (travelLink) {
             window.location.href = travelLink;
           }
@@ -190,10 +195,23 @@ export const UniverseScene: React.FC = () => {
       return;
     }
 
-    if (cameraZoom.current < 1) {
-      cameraZoom.current = Math.min(1, cameraZoom.current + delta * 0.1);
-      perspectiveCamera.fov = 75 * cameraZoom.current;
-      perspectiveCamera.updateProjectionMatrix();
+    if (arrivedCameraPos.current) {
+      const distFromArrival = perspectiveCamera.position.distanceTo(arrivedCameraPos.current);
+      if (distFromArrival > 15) {
+        // User has flown/moved away, reset the zoom
+        shouldResetZoom.current = true;
+        arrivedCameraPos.current = null;
+      }
+    }
+
+    if (shouldResetZoom.current) {
+      if (cameraZoom.current < 1) {
+        cameraZoom.current = Math.min(1, cameraZoom.current + delta * 0.4);
+        perspectiveCamera.fov = 75 * cameraZoom.current;
+        perspectiveCamera.updateProjectionMatrix();
+      } else {
+        shouldResetZoom.current = false;
+      }
     }
   });
 
@@ -210,15 +228,6 @@ export const UniverseScene: React.FC = () => {
           key={item.id}
           position={galaxyPositions[index]}
           rotation={item.rotation}
-          onPointerOver={() => setHoveredId(item.id)}
-          onPointerOut={() => setHoveredId(null)}
-          onClick={() => {
-            cameraZoom.current = 1;
-            setTravelTargetId(item.id);
-            setTravelLink(item.link);
-            setIsTraveling(true);
-            setIsAnimating(true);
-          }}
         >
           {item.title === "Contact" ? (
             <Blackhole
@@ -229,18 +238,40 @@ export const UniverseScene: React.FC = () => {
                   : item.scale
               }
               rotation={[0, 0, 0]}
+              raycast={() => null}
             />
           ) : (
             <Galaxy
               position={[0, 0, 0]}
-              scale={
-                hoveredId === item.id || travelTargetId === item.id
-                  ? item.scale * 2.4
-                  : item.scale
-              }
+              scale={item.scale}
               rotation={[0, 0, 0]}
+              raycast={() => null}
             />
           )}
+
+          {/* Tight, invisible raycast target sphere */}
+          <mesh
+            onClick={(e) => {
+              e.stopPropagation();
+              cameraZoom.current = 1;
+              setTravelTarget(item.id, item.link);
+              setIsTraveling(true);
+              setIsAnimating(true);
+              arrivedCameraPos.current = null;
+              shouldResetZoom.current = false;
+            }}
+            onPointerOver={(e) => {
+              e.stopPropagation();
+              setHoveredId(item.id);
+            }}
+            onPointerOut={(e) => {
+              e.stopPropagation();
+              setHoveredId(null);
+            }}
+          >
+            <sphereGeometry args={[item.title === "Contact" ? item.scale * 9 : item.scale * 7, 16, 16]} />
+            <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+          </mesh>
 
           {/* Hover label */}
           {hoveredId === item.id && (
@@ -251,7 +282,7 @@ export const UniverseScene: React.FC = () => {
 
           {/* Visual indicator/halo for interactive galaxies */}
           {hoveredId === item.id && item.title !== "Contact" && (
-            <mesh>
+            <mesh raycast={() => null}>
               <sphereGeometry args={[item.scale * 9, 32, 32]} />
               <meshBasicMaterial
                 color="#00ff88"

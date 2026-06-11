@@ -5,6 +5,10 @@ import { Bloom, ChromaticAberration, EffectComposer, Noise, Vignette } from "@re
 import { useUniverseStore } from "./store/universe";
 import CameraController from "./components/CameraController";
 import AudioController from "./components/AudioController";
+import SceneTransition from "./components/SceneTransition";
+import ContactForm from "./components/ContactForm";
+import MaximizedDisplay from "./scenes/CockpitScene/MaximizedDisplay";
+import { useCockpitStore } from "./store/cockpitStore";
 import IntroScene from "./scenes/IntroScene";
 import UniverseScene from "./scenes/UniverseScene";
 import CockpitScene from "./scenes/CockpitScene";
@@ -65,12 +69,24 @@ function AppContent({ onDistanceUpdate }: { onDistanceUpdate: (distance: number)
 }
 
 export default function App() {
-  const { currentScene, audioEnabled, setAudioEnabled, setCurrentScene } = useUniverseStore();
+  const { currentScene, audioEnabled, setAudioEnabled, transitionToScene, setIsContactOpen, distanceTraveled, setDistanceTraveled } = useUniverseStore();
+  const setActiveDisplay = useCockpitStore((state) => state.setActiveDisplay);
   const [showGuidance, setShowGuidance] = useState(false);
   const [displayedText, setDisplayedText] = useState('');
   const [typingComplete, setTypingComplete] = useState(false);
-  const [distanceTraveled, setDistanceTraveled] = useState(0);
+  const hasShownGuidanceThisSession = useRef(false);
   const guidanceText = "You can travel in space, but if you want to travel faster into the galaxies, use the spacecraft...";
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsContactOpen(false);
+        setActiveDisplay(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [setIsContactOpen, setActiveDisplay]);
 
   const handleDistanceUpdate = (distance: number) => {
     setDistanceTraveled(prev => prev + distance);
@@ -82,9 +98,12 @@ export default function App() {
   useEffect(() => {
     const timer = window.setTimeout(() => {
     if (currentScene === 'universe') {
-      setShowGuidance(true);
-      setDisplayedText('');
-      setTypingComplete(false);
+      if (!hasShownGuidanceThisSession.current) {
+        setShowGuidance(true);
+        setDisplayedText('');
+        setTypingComplete(false);
+        hasShownGuidanceThisSession.current = true;
+      }
       setDistanceTraveled(0);
     } else {
       setShowGuidance(false);
@@ -94,6 +113,12 @@ export default function App() {
 
     return () => window.clearTimeout(timer);
   }, [currentScene]);
+
+  useEffect(() => {
+    if (distanceTraveled > 20 && showGuidance) {
+      setShowGuidance(false);
+    }
+  }, [distanceTraveled, showGuidance]);
 
   useEffect(() => {
     if (!showGuidance) return;
@@ -230,7 +255,7 @@ export default function App() {
             type="button"
             onClick={() => {
               setShowGuidance(false);
-              setCurrentScene("cockpit");
+              transitionToScene("cockpit");
             }}
             aria-label="Enter spacecraft cockpit"
             className="spacecraft-entry"
@@ -243,7 +268,7 @@ export default function App() {
           <button
             type="button"
             className="cockpit-exit"
-            onClick={() => setCurrentScene("universe")}
+            onClick={() => transitionToScene("universe")}
             aria-label="Exit cockpit"
           >
             EXIT COCKPIT
@@ -293,7 +318,9 @@ export default function App() {
 
               {typingComplete && (
                 <button
-                  onClick={() => setShowGuidance(false)}
+                  onClick={() => {
+                    setShowGuidance(false);
+                  }}
                   style={{
                     position: 'absolute',
                     top: '10px',
@@ -364,6 +391,12 @@ export default function App() {
         }
       `}</style>
       </div>
+
+      {/* Transition overlays at the very end to stay on top */}
+      <SceneTransition />
+      <ContactForm />
+      <MaximizedDisplay />
     </>
   );
 }
+
